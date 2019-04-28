@@ -6,16 +6,16 @@ Submodule for managing configurations
     ```bash
     $  gradle java
     
-    BUILD SUCCESSFUL in 5s
+    BUILD SUCCESSFUL
     ```
 
 2. Create a **ConfigurationManagerComponent**
     ```
-        ConfigurationManagerComponent configurationManagerComponent = DaggerConfigurationManagerComponent.builder()
-                .unsatisfiedConfigurationDependenciesModule(new UnsatisfiedConfigurationDependenciesModule(
-                    file  // File location of config file
-                 ))
-                .build();
+    ConfigurationManagerComponent configurationManagerComponent = DaggerConfigurationManagerComponent
+            .builder()
+            .configurationDependenciesModule(new ConfigurationDependenciesModule(reader, writer))
+            .build();
+        
     ```
     
 3. Get **ConfigurationManager** instance from the component

@@ -1,5 +1,6 @@
 package ConfigurationManagement;
 
+import ConfigurationManagement.Interfaces.ConfigurationManager;
 import dagger.Component;
 
 @ConfigurationScope
