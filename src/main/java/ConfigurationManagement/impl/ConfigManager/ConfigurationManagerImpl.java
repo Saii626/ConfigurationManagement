@@ -21,7 +21,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 
     private Map<String, List<WeakReference<OnConfigurationChange>>> observerMap;
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    private Configurations configurations;
+    private final Configurations configurations;
     private ConfigurationFileManager fileManager;
 
     public ConfigurationManagerImpl(ConfigurationFileManager fileManager) throws IOException {
@@ -32,34 +32,42 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 
     @Override
     public <T> Optional<T> get(String key) {
-        if (configurations.containsKey(key)) {
+        synchronized (configurations) {
             return Optional.ofNullable(configurations.get(key));
-        } else {
-            return Optional.empty();
         }
     }
 
     @Override
     public <T> T getOrThrow(String key) throws MissingConfigurationValue {
-        if (configurations.containsKey(key)) {
-            return configurations.get(key);
-        } else {
-            throw new MissingConfigurationValue(key);
-        }
+       return this.<T>get(key).orElseThrow(() -> new MissingConfigurationValue(key));
+    }
+
+    @Override
+    public <T> T getRaw(String key) {
+        return this.<T>get(key).orElse(null);
+    }
+
+    @Override
+    public <T> T getOrDefault(String key, T defaultValue) {
+        return this.<T>get(key).orElse(defaultValue);
     }
 
     @Override
     public <T> void put(String key, T value) {
-        logger.debug("Updating {}: {}", key, value);
-        this.notifyForKey(key, value);
-        configurations.put(key, value);
+        synchronized (configurations) {
+            logger.debug("Updating {}: {}", key, value);
+            this.notifyForKey(key, value);
+            configurations.put(key, value);
+        }
     }
 
     @Override
     public void delete(String key) {
-        logger.debug("Deleting {}", key);
-        this.notifyForKey(key, null);
-        configurations.delete(key);
+        synchronized (configurations) {
+            logger.debug("Deleting {}", key);
+            this.notifyForKey(key, null);
+            configurations.delete(key);
+        }
     }
 
     @Override
@@ -73,6 +81,12 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             observers.add(listener);
             return observers;
         });
+    }
+
+    @Override
+    public <T> void addOnConfigurationChangeListener(String key, OnConfigurationChange<T> listener) {
+        WeakReference<OnConfigurationChange> weakReference = new WeakReference<>(listener);
+        addOnConfigurationChangeListener(key, weakReference);
     }
 
     @Override

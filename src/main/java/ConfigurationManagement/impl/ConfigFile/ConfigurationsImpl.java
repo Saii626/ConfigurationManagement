@@ -66,7 +66,7 @@ public class ConfigurationsImpl implements Configurations {
         removeConfig(key);
     }
 
-    static class ConfigurationsAdapter implements JsonSerializer<ConfigurationsImpl>, JsonDeserializer<ConfigurationsImpl> {
+    public static class ConfigurationsAdapter implements JsonSerializer<ConfigurationsImpl>, JsonDeserializer<ConfigurationsImpl> {
 
         private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 

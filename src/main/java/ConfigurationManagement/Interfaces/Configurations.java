@@ -1,5 +1,8 @@
 package ConfigurationManagement.Interfaces;
 
+/**
+ * Internal interface. Shouldnot be used directly
+ */
 public interface Configurations {
 
     <T> T get(String key);

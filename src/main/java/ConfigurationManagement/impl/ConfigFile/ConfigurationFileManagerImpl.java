@@ -8,29 +8,28 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 
 public class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 
-    private Reader reader;
-    private Writer writer;
-
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private Gson gson;
+    private File configFile;
 
-    public ConfigurationFileManagerImpl(Gson gson, Reader reader, Writer writer) {
+    public ConfigurationFileManagerImpl(Gson gson, File configFile) {
         this.gson = gson;
-        this.reader = reader;
-        this.writer = writer;
+        this.configFile = configFile;
     }
 
     @Override
     public Configurations readConfigurations() throws IOException {
         logger.debug("Reading configurations");
-        BufferedReader br = new BufferedReader(reader);
 
+        createIfNotExist(configFile);
+        BufferedReader br = new BufferedReader(new FileReader(configFile));
         StringBuilder configFileString = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
@@ -49,11 +48,21 @@ public class ConfigurationFileManagerImpl implements ConfigurationFileManager {
         logger.debug("Writing configurations");
         String jsonConfig = gson.toJson(configurations, ConfigurationsImpl.class);
 
-        BufferedWriter bw = new BufferedWriter(writer);
+        createIfNotExist(configFile);
+        BufferedWriter bw = new BufferedWriter(new FileWriter(configFile));
         bw.write(jsonConfig);
         bw.write('\n');
         bw.flush();
         bw.close();
     }
 
+    private void createIfNotExist(File file) throws IOException {
+        if (!file.exists()) {
+            if (file.getParentFile() != null && !file.getParentFile().exists()) {
+                file.getParentFile().mkdir();
+            }
+
+            file.createNewFile();
+        }
+    }
 }
