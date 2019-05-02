@@ -2,6 +2,8 @@ package ConfigurationManagement;
 
 import ConfigurationManagement.Interfaces.ConfigurationManager;
 import ConfigurationManagement.Interfaces.OnConfigurationChange;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,13 @@ public class ConfigurationManagerInstanceCreatorTest {
 
     @Test
     public void createConfigurationManager() throws IOException {
-        ConfigurationManager configurationManager = ConfigurationManagerInstanceCreator.createInstance(new File("~/test"));
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                .setPrettyPrinting()
+                .create();
+
+        ConfigurationManager configurationManager = ConfigurationManagerInstanceCreator.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
 
         configurationManager.put("name", "saikat");
         configurationManager.put("age", 10);
@@ -29,8 +37,8 @@ public class ConfigurationManagerInstanceCreatorTest {
         configurationManager.put("name", "Saikat");
         configurationManager.syncConfigurations();
 
-        ConfigurationManager configManager = ConfigurationManagerInstanceCreator.createInstance(new File("~/test"));
+        ConfigurationManager configManager = ConfigurationManagerInstanceCreator.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
         assertEquals("Wrong name", configManager.<String>getRaw("name"), "Saikat");
-        assertEquals("Wrong age", configManager.<Integer>getRaw("age").intValue(), 10);
+        assertEquals("Wrong age", configManager.<Double>getRaw("age"), 10.0, 10e-5);
     }
 }

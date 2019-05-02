@@ -2,7 +2,6 @@ package ConfigurationManagement.impl.ConfigManager;
 
 import ConfigurationManagement.Interfaces.ConfigurationFileManager;
 import ConfigurationManagement.Interfaces.ConfigurationManager;
-import ConfigurationManagement.Interfaces.Configurations;
 import ConfigurationManagement.MissingConfigurationValue;
 import ConfigurationManagement.Interfaces.OnConfigurationChange;
 import org.slf4j.Logger;
@@ -21,7 +20,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 
     private Map<String, List<WeakReference<OnConfigurationChange>>> observerMap;
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    private final Configurations configurations;
+    private final Map<String, Object> configurations;
     private ConfigurationFileManager fileManager;
 
     public ConfigurationManagerImpl(ConfigurationFileManager fileManager) throws IOException {
@@ -30,10 +29,11 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         this.configurations = this.fileManager.readConfigurations();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Optional<T> get(String key) {
         synchronized (configurations) {
-            return Optional.ofNullable(configurations.get(key));
+            return Optional.ofNullable((T) configurations.get(key));
         }
     }
 
@@ -66,7 +66,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         synchronized (configurations) {
             logger.debug("Deleting {}", key);
             this.notifyForKey(key, null);
-            configurations.delete(key);
+            configurations.remove(key);
         }
     }
 

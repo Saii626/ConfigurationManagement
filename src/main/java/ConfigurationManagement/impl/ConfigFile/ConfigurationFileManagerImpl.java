@@ -1,8 +1,8 @@
 package ConfigurationManagement.impl.ConfigFile;
 
 import ConfigurationManagement.Interfaces.ConfigurationFileManager;
-import ConfigurationManagement.Interfaces.Configurations;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 
@@ -19,13 +22,13 @@ public class ConfigurationFileManagerImpl implements ConfigurationFileManager {
     private Gson gson;
     private File configFile;
 
-    public ConfigurationFileManagerImpl(Gson gson, File configFile) {
+    public ConfigurationFileManagerImpl(File configFile, Gson gson) {
         this.gson = gson;
         this.configFile = configFile;
     }
 
     @Override
-    public Configurations readConfigurations() throws IOException {
+    public Map<String, Object> readConfigurations() throws IOException {
         logger.debug("Reading configurations");
 
         createIfNotExist(configFile);
@@ -39,19 +42,22 @@ public class ConfigurationFileManagerImpl implements ConfigurationFileManager {
         }
         br.close();
 
-        Configurations configurations = gson.fromJson(configFileString.toString().trim(), ConfigurationsImpl.class);
-        return configurations != null ? configurations : new ConfigurationsImpl();
+        Type mapStringObject = new TypeToken<Map<String, Object>>(){}.getType();
+        Map<String, Object> configMap = gson.fromJson(configFileString.toString().trim(), mapStringObject);
+
+        return configMap!=null ? configMap : new HashMap<>();
     }
 
     @Override
-    public void writeConfigurations(Configurations configurations) throws IOException {
+    public void writeConfigurations(Map<String, Object> configurations) throws IOException {
         logger.debug("Writing configurations");
-        String jsonConfig = gson.toJson(configurations, ConfigurationsImpl.class);
+
+        Type mapStringObject = new TypeToken<Map<String, Object>>(){}.getType();
+        String jsonConfig = gson.toJson(configurations, mapStringObject);
 
         createIfNotExist(configFile);
         BufferedWriter bw = new BufferedWriter(new FileWriter(configFile));
         bw.write(jsonConfig);
-        bw.write('\n');
         bw.flush();
         bw.close();
     }

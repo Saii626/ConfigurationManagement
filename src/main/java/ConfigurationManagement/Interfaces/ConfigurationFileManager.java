@@ -2,6 +2,7 @@ package ConfigurationManagement.Interfaces;
 
 
 import java.io.IOException;
+import java.util.Map;
 
 
 /**
@@ -9,7 +10,7 @@ import java.io.IOException;
  */
 public interface ConfigurationFileManager {
 
-    Configurations readConfigurations() throws IOException;
+    Map<String, Object> readConfigurations() throws IOException;
 
-    void writeConfigurations(Configurations configurations) throws IOException;
+    void writeConfigurations(Map<String, Object> configurations) throws IOException;
 }
