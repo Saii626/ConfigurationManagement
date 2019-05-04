@@ -39,6 +39,6 @@ public class ConfigurationManagerInstanceCreatorTest {
 
         ConfigurationManager configManager = ConfigurationManagerInstanceCreator.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
         assertEquals("Wrong name", configManager.<String>getRaw("name"), "Saikat");
-        assertEquals("Wrong age", configManager.<Double>getRaw("age"), 10.0, 10e-5);
+        assertEquals("Wrong age", (int) configManager.<Integer>getRaw("age"), 10);
     }
 }

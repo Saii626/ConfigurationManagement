@@ -42,18 +42,19 @@ public class ConfigurationFileManagerImpl implements ConfigurationFileManager {
         }
         br.close();
 
-        Type mapStringObject = new TypeToken<Map<String, Object>>(){}.getType();
-        Map<String, Object> configMap = gson.fromJson(configFileString.toString().trim(), mapStringObject);
+        Type mapStringObject = new TypeToken<HashMap<String, JsonObject>>(){}.getType();
+        Map<String, JsonObject> configMap = gson.fromJson(configFileString.toString().trim(), mapStringObject);
 
-        return configMap!=null ? configMap : new HashMap<>();
+        return convertToObjectMap(configMap);
     }
 
     @Override
     public void writeConfigurations(Map<String, Object> configurations) throws IOException {
         logger.debug("Writing configurations");
 
-        Type mapStringObject = new TypeToken<Map<String, Object>>(){}.getType();
-        String jsonConfig = gson.toJson(configurations, mapStringObject);
+        Map<String, JsonObject> jsonMap = convertToJsonMap(configurations);
+        Type mapStringObject = new TypeToken<HashMap<String, JsonObject>>(){}.getType();
+        String jsonConfig = gson.toJson(jsonMap, mapStringObject);
 
         createIfNotExist(configFile);
         BufferedWriter bw = new BufferedWriter(new FileWriter(configFile));
@@ -70,5 +71,27 @@ public class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 
             file.createNewFile();
         }
+    }
+
+    private Map<String, JsonObject> convertToJsonMap(Map<String, Object> map) {
+        Map<String, JsonObject> ret = new HashMap<>();
+
+        if (map != null && map.size() > 0) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                ret.put(entry.getKey(), new JsonObject(entry.getValue()));
+            }
+        }
+        return ret;
+    }
+
+    private Map<String, Object> convertToObjectMap(Map<String, JsonObject> map) {
+        Map<String, Object> ret = new HashMap<>();
+
+        if (map != null && map.size() > 0) {
+            for (Map.Entry<String, JsonObject> entry : map.entrySet()) {
+                ret.put(entry.getKey(), entry.getValue().getObject());
+            }
+        }
+        return ret;
     }
 }

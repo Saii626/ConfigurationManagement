@@ -9,11 +9,33 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 public class JsonObjectAdapter implements TypeAdapterFactory {
 
     private static TypeAdapter jsonObjectAdapter;
+    private static final Map<Class, Class> conversionMap = getWrapperTypes();
+
+    private static Map<Class, Class> getWrapperTypes() {
+        Map<Class, Class> map = new HashMap<>();
+        map.put(Boolean.class, Boolean.class);
+
+        map.put(Character.class, String.class);
+        map.put(String.class, String.class);
+
+        map.put(Byte.class, Integer.class);
+        map.put(Short.class, Integer.class);
+        map.put(Integer.class, Integer.class);
+
+        map.put(Long.class, Long.class);
+
+        map.put(Float.class, Double.class);
+        map.put(Double.class, Double.class);
+
+        return map;
+    }
 
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
@@ -43,8 +65,24 @@ public class JsonObjectAdapter implements TypeAdapterFactory {
                     out.name(objectToWrite.getTypeName()).value(classToWrite.getName());
 
                     out.name(objectToWrite.getDataName());
-                    String json = gsonAdapter.apply(classToWrite).toJson(objectToWrite.getObject());
-                    out.value(json);
+                    if (conversionMap.get(classToWrite) != null) {
+                        Class c = conversionMap.get(classToWrite);
+                        if (c.equals(Boolean.class)) {
+                            out.value((Boolean) objectToWrite.getObject());
+                        } else if (c.equals(String.class)) {
+                            out.value((String) objectToWrite.getObject());
+                        } else if (c.equals(Integer.class)) {
+                            out.value((Integer) objectToWrite.getObject());
+                        } else if (c.equals(Long.class)) {
+                            out.value((Long) objectToWrite.getObject());
+                        } else if (c.equals(Double.class)) {
+                            out.value((Double) objectToWrite.getObject());
+                        }
+                    } else {
+                        String json = gsonAdapter.apply(classToWrite).toJson(objectToWrite.getObject());
+                        out.value(json);
+                    }
+//
                     out.endObject();
                 }
 
@@ -71,14 +109,31 @@ public class JsonObjectAdapter implements TypeAdapterFactory {
                             throw new IOException("required parameter \"" + jsonObject.getDataName() + "\" not found");
                         }
 
-                        jsonObject.setObject(gsonAdapter.apply(classType).read(in));
+                        if (conversionMap.get(classType) != null) {
+                            Class c = conversionMap.get(classType);
+                            if (c.equals(Boolean.class)) {
+                                jsonObject.setObject(in.nextBoolean());
+                            } else if (c.equals(String.class)) {
+                                jsonObject.setObject(in.nextString());
+                            } else if (c.equals(Integer.class)) {
+                                jsonObject.setObject(in.nextInt());
+                            } else if (c.equals(Long.class)) {
+                                jsonObject.setObject(in.nextLong());
+                            } else if (c.equals(Double.class)) {
+                                jsonObject.setObject(in.nextDouble());
+                            }
+                        } else {
+                            String jsonObj = in.nextString();
+                            jsonObject.setObject(gsonAdapter.apply(classType).fromJson(jsonObj));
+                        }
 
-                        return (T) jsonObject;
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                         return null;
                     }
 
+                    in.endObject();
+                    return (T) jsonObject;
                 }
             };
         }
