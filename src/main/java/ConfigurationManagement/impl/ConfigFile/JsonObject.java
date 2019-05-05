@@ -32,4 +32,12 @@ public class JsonObject {
     public void setObject(Object object) {
         this.object = object;
     }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public void setDataName(String dataName) {
+        this.dataName = dataName;
+    }
 }

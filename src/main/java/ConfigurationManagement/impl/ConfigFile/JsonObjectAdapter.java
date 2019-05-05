@@ -96,18 +96,13 @@ public class JsonObjectAdapter implements TypeAdapterFactory {
                     JsonObject jsonObject = new JsonObject();
 
                     in.beginObject();
-
-                    if (!in.nextName().equals(jsonObject.getTypeName())) {
-                        throw new IOException("required parameter \""+jsonObject.getTypeName()+"\" not found");
-                    }
+                    jsonObject.setTypeName(in.nextName());
 
                     String className = in.nextString();
                     try {
                         Class classType = Class.forName(className);
-                        if (!in.nextName().equals(jsonObject.getDataName())) {
-                            throw new IOException("required parameter \"" + jsonObject.getDataName() + "\" not found");
-                        }
 
+                        jsonObject.setDataName(in.nextName());
                         if (conversionMap.get(classType) != null) {
                             Class c = conversionMap.get(classType);
                             if (c.equals(Boolean.class)) {
