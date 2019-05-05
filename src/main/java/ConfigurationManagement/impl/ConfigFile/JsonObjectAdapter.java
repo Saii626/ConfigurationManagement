@@ -79,8 +79,7 @@ public class JsonObjectAdapter implements TypeAdapterFactory {
                             out.value((Double) objectToWrite.getObject());
                         }
                     } else {
-                        String json = gsonAdapter.apply(classToWrite).toJson(objectToWrite.getObject());
-                        out.value(json);
+                        gsonAdapter.apply(classToWrite).write(out, objectToWrite.getObject());
                     }
 //
                     out.endObject();
@@ -123,8 +122,7 @@ public class JsonObjectAdapter implements TypeAdapterFactory {
                                 jsonObject.setObject(in.nextDouble());
                             }
                         } else {
-                            String jsonObj = in.nextString();
-                            jsonObject.setObject(gsonAdapter.apply(classType).fromJson(jsonObj));
+                            jsonObject.setObject(gsonAdapter.apply(classType).read(in));
                         }
 
                     } catch (ClassNotFoundException e) {
