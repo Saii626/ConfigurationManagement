@@ -1,4 +1,4 @@
-package ConfigurationManagement.Interfaces;
+package app.saikat.ConfigurationManagement.interfaces;
 
 public interface OnConfigurationChange<T> {
 

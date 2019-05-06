@@ -1,12 +1,13 @@
-package ConfigurationManagement;
+package app.saikat.ConfigurationManagement;
 
-import ConfigurationManagement.Interfaces.ConfigurationManager;
-import ConfigurationManagement.Interfaces.OnConfigurationChange;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import app.saikat.ConfigurationManagement.interfaces.ConfigurationManager;
+import app.saikat.ConfigurationManagement.interfaces.OnConfigurationChange;
 
 import java.io.File;
 import java.io.IOException;

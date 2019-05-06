@@ -1,6 +1,6 @@
-package ConfigurationManagement.Interfaces;
+package app.saikat.ConfigurationManagement.interfaces;
 
-import ConfigurationManagement.MissingConfigurationValue;
+import app.saikat.ConfigurationManagement.MissingConfigurationValue;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;

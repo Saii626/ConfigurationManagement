@@ -1,8 +1,8 @@
-package ConfigurationManagement;
+package app.saikat.ConfigurationManagement;
 
-import ConfigurationManagement.Interfaces.ConfigurationManager;
-import ConfigurationManagement.impl.ConfigFile.ConfigurationFileManagerImpl;
-import ConfigurationManagement.impl.ConfigManager.ConfigurationManagerImpl;
+import app.saikat.ConfigurationManagement.interfaces.ConfigurationManager;
+import app.saikat.ConfigurationManagement.impl.ConfigFile.ConfigurationFileManagerImpl;
+import app.saikat.ConfigurationManagement.impl.ConfigManager.ConfigurationManagerImpl;
 import com.google.gson.Gson;
 
 import java.io.File;

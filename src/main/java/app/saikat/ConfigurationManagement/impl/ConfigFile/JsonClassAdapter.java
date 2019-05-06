@@ -1,4 +1,4 @@
-package ConfigurationManagement.impl.ConfigFile;
+package app.saikat.ConfigurationManagement.impl.ConfigFile;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

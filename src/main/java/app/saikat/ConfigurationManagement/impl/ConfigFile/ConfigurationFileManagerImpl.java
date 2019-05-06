@@ -1,6 +1,6 @@
-package ConfigurationManagement.impl.ConfigFile;
+package app.saikat.ConfigurationManagement.impl.ConfigFile;
 
-import ConfigurationManagement.Interfaces.ConfigurationFileManager;
+import app.saikat.ConfigurationManagement.interfaces.ConfigurationFileManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;

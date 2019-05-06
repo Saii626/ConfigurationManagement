@@ -1,4 +1,4 @@
-package ConfigurationManagement;
+package app.saikat.ConfigurationManagement;
 
 public class MissingConfigurationValue extends Exception{
 

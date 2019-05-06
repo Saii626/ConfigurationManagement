@@ -1,9 +1,9 @@
-package ConfigurationManagement.impl.ConfigManager;
+package app.saikat.ConfigurationManagement.impl.ConfigManager;
 
-import ConfigurationManagement.Interfaces.ConfigurationFileManager;
-import ConfigurationManagement.Interfaces.ConfigurationManager;
-import ConfigurationManagement.MissingConfigurationValue;
-import ConfigurationManagement.Interfaces.OnConfigurationChange;
+import app.saikat.ConfigurationManagement.interfaces.ConfigurationFileManager;
+import app.saikat.ConfigurationManagement.interfaces.ConfigurationManager;
+import app.saikat.ConfigurationManagement.MissingConfigurationValue;
+import app.saikat.ConfigurationManagement.interfaces.OnConfigurationChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

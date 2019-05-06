@@ -1,4 +1,4 @@
-package ConfigurationManagement.Interfaces;
+package app.saikat.ConfigurationManagement.interfaces;
 
 
 import java.io.IOException;
