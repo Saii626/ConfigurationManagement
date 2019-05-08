@@ -26,7 +26,7 @@ public class ConfigurationManagerInstanceCreatorTest {
                 .setPrettyPrinting()
                 .create();
 
-        ConfigurationManager configurationManager = ConfigurationManagerInstanceCreator.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
+        ConfigurationManager configurationManager = ConfigurationManagerInstanceHandler.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
 
         configurationManager.put("name", "saikat");
         configurationManager.put("age", 10);
@@ -38,7 +38,7 @@ public class ConfigurationManagerInstanceCreatorTest {
         configurationManager.put("name", "Saikat");
         configurationManager.syncConfigurations();
 
-        ConfigurationManager configManager = ConfigurationManagerInstanceCreator.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
+        ConfigurationManager configManager = ConfigurationManagerInstanceHandler.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
         assertEquals("Wrong name", configManager.<String>getRaw("name"), "Saikat");
         assertEquals("Wrong age", (int) configManager.<Integer>getRaw("age"), 10);
     }
