@@ -1,7 +1,5 @@
 package app.saikat.ConfigurationManagement;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +19,7 @@ public class ConfigurationManagerInstanceCreatorTest {
     @Test
     public void createConfigurationManager() throws IOException {
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                .setPrettyPrinting()
-                .create();
-
-        ConfigurationManager configurationManager = ConfigurationManagerInstanceHandler.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
+        ConfigurationManager configurationManager = ConfigurationManagerInstanceHandler.createInstance(new File(System.getProperty("user.home")+"/test"));
 
         configurationManager.put("name", "saikat");
         configurationManager.put("age", 10);
@@ -38,7 +31,7 @@ public class ConfigurationManagerInstanceCreatorTest {
         configurationManager.put("name", "Saikat");
         configurationManager.syncConfigurations();
 
-        ConfigurationManager configManager = ConfigurationManagerInstanceHandler.createInstance(new File(System.getProperty("user.home")+"/test"), gson);
+        ConfigurationManager configManager = ConfigurationManagerInstanceHandler.createInstance(new File(System.getProperty("user.home")+"/test"));
         assertEquals("Wrong name", configManager.<String>getRaw("name"), "Saikat");
         assertEquals("Wrong age", (int) configManager.<Integer>getRaw("age"), 10);
     }

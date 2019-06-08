@@ -1,5 +1,6 @@
 package app.saikat.ConfigurationManagement.impl.ConfigFile;
 
+import app.saikat.ConfigurationManagement.Gson.JsonObject;
 import app.saikat.ConfigurationManagement.interfaces.ConfigurationFileManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

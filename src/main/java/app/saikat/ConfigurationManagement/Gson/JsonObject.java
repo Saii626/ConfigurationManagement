@@ -1,4 +1,4 @@
-package app.saikat.ConfigurationManagement.impl.ConfigFile;
+package app.saikat.ConfigurationManagement.Gson;
 
 import com.google.gson.annotations.JsonAdapter;
 
