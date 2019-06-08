@@ -43,14 +43,15 @@ public interface ConfigurationManager {
 
 
     /**
-     * Gets a configuration object associated with key
+     * Gets a configuration object associated with key if present
+     * Else puts the default value in the map
      * @param key the key whose mapping is required
-     * @param defaultValue default value to use if object associated with key doesnot
-     *                     exist or is null
+     * @param defaultValue default value to store and return if object associated
+     *                     with key doesnot exist or is null
      * @param <T> type parameter of associated object
      * @return configuration object if present
      */
-    <T> T getOrDefault(String key, T defaultValue);
+    <T> T getOrSetDefault(String key, T defaultValue) throws IOException;
 
 
     /**

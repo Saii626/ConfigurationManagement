@@ -48,8 +48,14 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public <T> T getOrDefault(String key, T defaultValue) {
-        return this.<T>get(key).orElse(defaultValue);
+    public <T> T getOrSetDefault(String key, T defaultValue) throws IOException {
+        if (this.<T>get(key).isPresent()) {
+            return this.<T>get(key).orElse(defaultValue);
+        } else {
+            this.put(key, defaultValue);
+            this.syncConfigurations();
+            return defaultValue;
+        }
     }
 
     @Override
