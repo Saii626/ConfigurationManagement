@@ -1,2 +1,6 @@
-rootProject.name = 'ConfigurationManagement'
+include ':GsonManagement', ':DIManagement'
 
+project(':GsonManagement').projectDir = file('../GsonManagement')
+project(':DIManagement').projectDir = file('../DIManagement')
+
+rootProject.name = 'ConfigurationManagement'

@@ -4,6 +4,7 @@ import app.saikat.ConfigurationManagement.interfaces.ConfigurationFileManager;
 import app.saikat.ConfigurationManagement.interfaces.ConfigurationManager;
 import app.saikat.ConfigurationManagement.MissingConfigurationValue;
 import app.saikat.ConfigurationManagement.interfaces.OnConfigurationChange;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ConfigurationManagerImpl implements ConfigurationManager {
+class ConfigurationManagerImpl implements ConfigurationManager {
 
     private Map<String, List<WeakReference<OnConfigurationChange>>> observerMap;
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -100,7 +101,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         fileManager.writeConfigurations(configurations);
     }
 
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
+    @SuppressWarnings({"unchecked"})
     private <T> void notifyForKey(String key, T newValue) {
         if (observerMap.get(key) != null) {
             observerMap.get(key).stream()
@@ -114,4 +115,6 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             observerMap.put(key, updatedList);
         }
     }
+
+    
 }
