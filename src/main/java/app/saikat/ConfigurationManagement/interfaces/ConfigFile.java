@@ -1,4 +1,4 @@
-package app.saikat.ConfigurationManagement.impl.ConfigFile;
+package app.saikat.ConfigurationManagement.interfaces;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
