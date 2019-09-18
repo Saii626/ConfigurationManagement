@@ -76,7 +76,7 @@ public interface ConfigurationManager {
      * @param key the key whose association to observer
      * @param listener a WeakReference to OnConfigurationListener instance. This is the callback method
      */
-    void addOnConfigurationChangeListener(String key, WeakReference<OnConfigurationChange> listener);
+    void addOnConfigurationChangeListener(String key, WeakReference<OnConfigurationChange<?>> listener);
 
 
     /**
@@ -84,9 +84,8 @@ public interface ConfigurationManager {
      * to support dynamic update of application
      * @param key the key whose association to observer
      * @param listener the callback method. A weak reference to the method is internally created and stored
-     * @param <T> type parameter of associated object
      */
-    <T> void addOnConfigurationChangeListener(String key, OnConfigurationChange<T> listener);
+    void addOnConfigurationChangeListener(String key, OnConfigurationChange<?> listener);
 
     /**
      * Writes the configuration to file. Should be called before application shutdown

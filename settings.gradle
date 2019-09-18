@@ -1,6 +1,7 @@
-include ':GsonManagement', ':DIManagement'
+include ':GsonManagement', ':DIManagement', ':LogManagement'
 
 project(':GsonManagement').projectDir = file('../GsonManagement')
 project(':DIManagement').projectDir = file('../DIManagement')
+project(':LogManagement').projectDir = file('../LogManagement')
 
 rootProject.name = 'ConfigurationManagement'

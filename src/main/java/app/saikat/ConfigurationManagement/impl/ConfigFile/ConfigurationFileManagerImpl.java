@@ -4,8 +4,8 @@ import app.saikat.GsonManagement.JsonObject;
 import app.saikat.ConfigurationManagement.interfaces.ConfigurationFileManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import app.saikat.LogManagement.Logger;
+import app.saikat.LogManagement.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

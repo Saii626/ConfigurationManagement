@@ -5,8 +5,8 @@ import app.saikat.ConfigurationManagement.interfaces.ConfigurationManager;
 import app.saikat.ConfigurationManagement.MissingConfigurationValue;
 import app.saikat.ConfigurationManagement.interfaces.OnConfigurationChange;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import app.saikat.LogManagement.Logger;
+import app.saikat.LogManagement.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 class ConfigurationManagerImpl implements ConfigurationManager {
 
-    private Map<String, List<WeakReference<OnConfigurationChange>>> observerMap;
+    private Map<String, List<WeakReference<OnConfigurationChange<?>>>> observerMap;
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private final Map<String, Object> configurations;
     private ConfigurationFileManager fileManager;
@@ -78,7 +78,7 @@ class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public void addOnConfigurationChangeListener(String key, WeakReference<OnConfigurationChange> listener) {
+    public void addOnConfigurationChangeListener(String key, WeakReference<OnConfigurationChange<?>> listener) {
         observerMap.compute(key, (key1, observers) -> {
             if (observers == null) {
                 observers = new ArrayList<>();
@@ -91,8 +91,8 @@ class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public <T> void addOnConfigurationChangeListener(String key, OnConfigurationChange<T> listener) {
-        WeakReference<OnConfigurationChange> weakReference = new WeakReference<>(listener);
+    public void addOnConfigurationChangeListener(String key, OnConfigurationChange<?> listener) {
+        WeakReference<OnConfigurationChange<?>> weakReference = new WeakReference<>(listener);
         addOnConfigurationChangeListener(key, weakReference);
     }
 
@@ -102,13 +102,16 @@ class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @SuppressWarnings({"unchecked"})
-    private <T> void notifyForKey(String key, T newValue) {
+    private <T extends Object> void notifyForKey(String key, T newValue) {
         if (observerMap.get(key) != null) {
             observerMap.get(key).stream()
                     .filter(listener -> listener.get()!=null)
-                    .forEach(listener -> listener.get().onConfigurationChange(get(key).orElse(null), newValue));
+                    .forEach(listener ->  {
+                        OnConfigurationChange<T> l = (OnConfigurationChange<T>) listener.get();
+                        l.onConfigurationChange((T)get(key).orElse(null), newValue);
+                    });
 
-            List<WeakReference<OnConfigurationChange>> updatedList = observerMap.get(key).stream()
+            List<WeakReference<OnConfigurationChange<?>>> updatedList = observerMap.get(key).stream()
                     .filter(listener -> listener.get()!=null)
                     .collect(Collectors.toList());
 
