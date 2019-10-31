@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public interface ConfigurationFileManager {
 
-    Map<String, Object> readConfigurations() throws IOException;
+	Map<String, Object> readConfigurations() throws IOException;
 
-    void writeConfigurations(Map<String, Object> configurations) throws IOException;
+	void writeConfigurations(Map<String, Object> configurations) throws IOException;
 }

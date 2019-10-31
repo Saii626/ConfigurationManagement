@@ -10,8 +10,8 @@ import app.saikat.DIManagement.Provides;
 
 class ConfigFileMgrProvider {
 
-    @Provides
-    static ConfigurationFileManager getFileManager(Gson gson, @ConfigFile File file) {
-        return new ConfigurationFileManagerImpl(file, gson);
-    }
+	@Provides
+	static ConfigurationFileManager getFileManager(Gson gson, @ConfigFile File file) {
+		return new ConfigurationFileManagerImpl(file, gson);
+	}
 }

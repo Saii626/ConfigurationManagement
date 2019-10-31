@@ -8,8 +8,8 @@ import app.saikat.DIManagement.Provides;
 
 class ConfigMgrProvider {
 
-    @Provides
-    static ConfigurationManager getConfigurationManager(ConfigurationFileManager fileManager) throws IOException {
-        return new ConfigurationManagerImpl(fileManager);
-    }
+	@Provides
+	static ConfigurationManager getConfigurationManager(ConfigurationFileManager fileManager) throws IOException {
+		return new ConfigurationManagerImpl(fileManager);
+	}
 }
