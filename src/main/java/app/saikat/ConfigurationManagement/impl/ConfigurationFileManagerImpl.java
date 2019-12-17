@@ -1,11 +1,14 @@
-package app.saikat.ConfigurationManagement.impl.ConfigFile;
+package app.saikat.ConfigurationManagement.impl;
 
 import app.saikat.GsonManagement.JsonObject;
+import app.saikat.Annotations.ConfigurationManagement.ConfigFile;
+import app.saikat.Annotations.DIManagement.Provides;
 import app.saikat.ConfigurationManagement.interfaces.ConfigurationFileManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import app.saikat.LogManagement.Logger;
-import app.saikat.LogManagement.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,7 +22,7 @@ import java.util.Map;
 
 class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+	private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 	private Gson gson;
 	private File configFile;
 
@@ -94,5 +97,10 @@ class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 			}
 		}
 		return ret;
+	}
+
+	@Provides
+	static ConfigurationFileManager getFileManager(Gson gson, @ConfigFile File file) {
+		return new ConfigurationFileManagerImpl(file, gson);
 	}
 }

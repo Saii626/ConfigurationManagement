@@ -50,6 +50,7 @@ public interface ConfigurationManager {
 	 *					 with key doesnot exist or is null
 	 * @param <T> type parameter of associated object
 	 * @return configuration object if present
+	 * @throws IOException if unable to store the default value
 	 */
 	<T> T getOrSetDefault(String key, T defaultValue) throws IOException;
 

@@ -1,12 +1,13 @@
-package app.saikat.ConfigurationManagement.impl.ConfigManager;
+package app.saikat.ConfigurationManagement.impl;
 
 import app.saikat.ConfigurationManagement.interfaces.ConfigurationFileManager;
 import app.saikat.ConfigurationManagement.interfaces.ConfigurationManager;
+import app.saikat.Annotations.DIManagement.Provides;
 import app.saikat.ConfigurationManagement.MissingConfigurationValue;
 import app.saikat.ConfigurationManagement.interfaces.OnConfigurationChange;
 
-import app.saikat.LogManagement.Logger;
-import app.saikat.LogManagement.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 class ConfigurationManagerImpl implements ConfigurationManager {
 
 	private Map<String, List<WeakReference<OnConfigurationChange<?>>>> observerMap;
-	private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+	private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 	private final Map<String, Object> configurations;
 	private ConfigurationFileManager fileManager;
 
@@ -119,5 +120,8 @@ class ConfigurationManagerImpl implements ConfigurationManager {
 		}
 	}
 
-	
+	@Provides
+	static ConfigurationManager getConfigurationManager(ConfigurationFileManager fileManager) throws IOException {
+		return new ConfigurationManagerImpl(fileManager);
+	}
 }
