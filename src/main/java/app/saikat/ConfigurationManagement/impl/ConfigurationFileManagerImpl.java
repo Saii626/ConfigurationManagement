@@ -22,7 +22,8 @@ import java.util.Map;
 
 class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 
-	private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	private Logger logger = LogManager.getLogger(this.getClass()
+			.getSimpleName());
 	private Gson gson;
 	private File configFile;
 
@@ -46,10 +47,8 @@ class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 		}
 		br.close();
 
-		Type mapStringObject = new TypeToken<HashMap<String, JsonObject>>(){}.getType();
-		Map<String, JsonObject> configMap = gson.fromJson(configFileString.toString().trim(), mapStringObject);
-
-		return convertToObjectMap(configMap);
+		return convertToObjectMap(configFileString.toString()
+				.trim());
 	}
 
 	@Override
@@ -57,7 +56,7 @@ class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 		logger.debug("Writing configurations");
 
 		Map<String, JsonObject> jsonMap = convertToJsonMap(configurations);
-		Type mapStringObject = new TypeToken<HashMap<String, JsonObject>>(){}.getType();
+		Type mapStringObject = new TypeToken<HashMap<String, JsonObject>>() {}.getType();
 		String jsonConfig = gson.toJson(jsonMap, mapStringObject);
 
 		createIfNotExist(configFile);
@@ -69,8 +68,10 @@ class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 
 	private void createIfNotExist(File file) throws IOException {
 		if (!file.exists()) {
-			if (file.getParentFile() != null && !file.getParentFile().exists()) {
-				file.getParentFile().mkdir();
+			if (file.getParentFile() != null && !file.getParentFile()
+					.exists()) {
+				file.getParentFile()
+						.mkdir();
 			}
 
 			file.createNewFile();
@@ -88,15 +89,25 @@ class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 		return ret;
 	}
 
-	private Map<String, Object> convertToObjectMap(Map<String, JsonObject> map) {
-		Map<String, Object> ret = new HashMap<>();
+	private Map<String, Object> convertToObjectMap(String data) {
 
-		if (map != null && map.size() > 0) {
-			for (Map.Entry<String, JsonObject> entry : map.entrySet()) {
-				ret.put(entry.getKey(), entry.getValue().getObject());
+		Type unparsedConfType = new TypeToken<HashMap<String, String>>() {}.getType();
+		Map<String, String> unparsedConfig = gson.fromJson(data, unparsedConfType);
+
+		Map<String, Object> parsedConfig = new HashMap<>();
+
+		if (unparsedConfig != null) {
+			for (Map.Entry<String, String> entry : unparsedConfig.entrySet()) {
+				try {
+					JsonObject jsonObject = gson.fromJson(entry.getValue(), JsonObject.class);
+					parsedConfig.put(entry.getKey(), jsonObject != null ? jsonObject.getObject() : null);
+				} catch (Exception e) {
+					logger.error("Error parsing configuration with key: {}, val: {}", entry.getKey(), entry.getValue());
+					logger.error("Error: ", e);
+				}
 			}
 		}
-		return ret;
+		return parsedConfig;
 	}
 
 	@Provides

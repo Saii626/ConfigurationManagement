@@ -11,16 +11,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 class ConfigurationManagerImpl implements ConfigurationManager {
 
-	private Map<String, List<WeakReference<OnConfigurationChange<?>>>> observerMap;
+	private Map<String, Set<WeakReference<OnConfigurationChange<?>>>> observerMap;
 	private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 	private final Map<String, Object> configurations;
 	private ConfigurationFileManager fileManager;
@@ -82,7 +82,7 @@ class ConfigurationManagerImpl implements ConfigurationManager {
 	public void addOnConfigurationChangeListener(String key, WeakReference<OnConfigurationChange<?>> listener) {
 		observerMap.compute(key, (key1, observers) -> {
 			if (observers == null) {
-				observers = new ArrayList<>();
+				observers = new HashSet<>();
 			}
 
 			logger.debug("Adding observer for: {}", key);
@@ -112,9 +112,9 @@ class ConfigurationManagerImpl implements ConfigurationManager {
 						l.onConfigurationChange((T)get(key).orElse(null), newValue);
 					});
 
-			List<WeakReference<OnConfigurationChange<?>>> updatedList = observerMap.get(key).stream()
+			Set<WeakReference<OnConfigurationChange<?>>> updatedList = observerMap.get(key).stream()
 					.filter(listener -> listener.get()!=null)
-					.collect(Collectors.toList());
+					.collect(Collectors.toSet());
 
 			observerMap.put(key, updatedList);
 		}
