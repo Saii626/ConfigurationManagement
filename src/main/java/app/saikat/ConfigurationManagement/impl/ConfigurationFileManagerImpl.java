@@ -91,13 +91,13 @@ class ConfigurationFileManagerImpl implements ConfigurationFileManager {
 
 	private Map<String, Object> convertToObjectMap(String data) {
 
-		Type unparsedConfType = new TypeToken<HashMap<String, String>>() {}.getType();
-		Map<String, String> unparsedConfig = gson.fromJson(data, unparsedConfType);
+		Type unparsedConfType = new TypeToken<HashMap<String, com.google.gson.JsonObject>>() {}.getType();
+		Map<String, com.google.gson.JsonObject> unparsedConfig = gson.fromJson(data, unparsedConfType);
 
 		Map<String, Object> parsedConfig = new HashMap<>();
 
 		if (unparsedConfig != null) {
-			for (Map.Entry<String, String> entry : unparsedConfig.entrySet()) {
+			for (Map.Entry<String, com.google.gson.JsonObject> entry : unparsedConfig.entrySet()) {
 				try {
 					JsonObject jsonObject = gson.fromJson(entry.getValue(), JsonObject.class);
 					parsedConfig.put(entry.getKey(), jsonObject != null ? jsonObject.getObject() : null);
