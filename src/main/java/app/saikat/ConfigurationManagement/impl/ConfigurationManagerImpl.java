@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 class ConfigurationManagerImpl implements ConfigurationManager {
 
 	private Map<String, Set<WeakReference<OnConfigurationChange<?>>>> observerMap;
-	private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	private Logger logger = LogManager.getLogger(this.getClass()
+			.getSimpleName());
 	private final Map<String, Object> configurations;
 	private ConfigurationFileManager fileManager;
 
@@ -29,6 +30,16 @@ class ConfigurationManagerImpl implements ConfigurationManager {
 		observerMap = new HashMap<>();
 		this.fileManager = fileManager;
 		this.configurations = this.fileManager.readConfigurations();
+
+		Runtime.getRuntime()
+				.addShutdownHook(new Thread(() -> {
+					try {
+						syncConfigurations();
+					} catch (IOException e) {
+						logger.error("Error writing configurations to ConfigFile at shutdown");
+						logger.error("Error: ", e);
+					}
+				}));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -41,18 +52,22 @@ class ConfigurationManagerImpl implements ConfigurationManager {
 
 	@Override
 	public <T> T getOrThrow(String key) throws MissingConfigurationValue {
-	   return this.<T>get(key).orElseThrow(() -> new MissingConfigurationValue(key));
+		return this.<T>get(key)
+				.orElseThrow(() -> new MissingConfigurationValue(key));
 	}
 
 	@Override
 	public <T> T getRaw(String key) {
-		return this.<T>get(key).orElse(null);
+		return this.<T>get(key)
+				.orElse(null);
 	}
 
 	@Override
 	public <T> T getOrSetDefault(String key, T defaultValue) throws IOException {
-		if (this.<T>get(key).isPresent()) {
-			return this.<T>get(key).orElse(defaultValue);
+		if (this.<T>get(key)
+				.isPresent()) {
+			return this.<T>get(key)
+					.orElse(defaultValue);
 		} else {
 			this.put(key, defaultValue);
 			this.syncConfigurations();
@@ -102,18 +117,20 @@ class ConfigurationManagerImpl implements ConfigurationManager {
 		fileManager.writeConfigurations(configurations);
 	}
 
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({ "unchecked" })
 	private <T extends Object> void notifyForKey(String key, T newValue) {
 		if (observerMap.get(key) != null) {
-			observerMap.get(key).stream()
-					.filter(listener -> listener.get()!=null)
-					.forEach(listener ->  {
+			observerMap.get(key)
+					.stream()
+					.filter(listener -> listener.get() != null)
+					.forEach(listener -> {
 						OnConfigurationChange<T> l = (OnConfigurationChange<T>) listener.get();
-						l.onConfigurationChange((T)get(key).orElse(null), newValue);
+						l.onConfigurationChange((T) get(key).orElse(null), newValue);
 					});
 
-			Set<WeakReference<OnConfigurationChange<?>>> updatedList = observerMap.get(key).stream()
-					.filter(listener -> listener.get()!=null)
+			Set<WeakReference<OnConfigurationChange<?>>> updatedList = observerMap.get(key)
+					.stream()
+					.filter(listener -> listener.get() != null)
 					.collect(Collectors.toSet());
 
 			observerMap.put(key, updatedList);
